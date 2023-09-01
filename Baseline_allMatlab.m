@@ -42,7 +42,7 @@ for mod = 1:length(mod_schemes)
         while errorStats(3) <= maxNumBits
             data = randi([0,1],frameSize);                          % Generate binary data
             if ~strcmp(mod_schemes(mod), 'qam')
-                tx_sig = pskmod(data, M, pi/M, InputType="bit");      % Apply M-PSK modulation
+                tx_sig = pskmod(data, M, pi/M, InputType="bit");    % Apply M-PSK modulation
             else
                 tx_sig = qammod(data, M, InputType="bit");
             end 
@@ -53,8 +53,14 @@ for mod = 1:length(mod_schemes)
             noiseVar = 10.^(0.1*(powerDB-snr));           % Calculate the noise variance
     
             rxSig = channel(txSig,noiseVar);              % Pass the signal through a noisy channel
-            qpskRx = ofdmDemod(rxSig);                    % Apply OFDM demodulation
-            dataOut = pskdemod(qpskRx, M, pi/M, OutputType="bit");                  % Apply QPSK demodulation
+            rxSig = ofdmDemod(rxSig);                    % Apply OFDM demodulation
+            
+            if ~strcmp(mod_schemes(mod), 'qam')
+                dataOut = pskdemod(rxSig, M, pi/M, 'OutputType','bit'); % Apply M-PSK de-modulation
+            else
+                dataOut = qamdemod(rxSig, M, 'OutputType', 'bit'); %Apply QAM de-modulation
+            end
+
             errorStats = errorRate(data,dataOut,0);     % Collect error statistics
         end
         
@@ -65,7 +71,7 @@ for mod = 1:length(mod_schemes)
     berVecAllModSchemes(mod, :) = berVec; 
 end 
 
-%%
+
 %Step 5: Plot Error Curve
 berTheory_bpsk = berawgn(EbNo,'psk',2,'nondiff');
 berTheory_qpsk = berawgn(EbNo,'psk',4,'nondiff');
