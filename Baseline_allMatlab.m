@@ -41,9 +41,14 @@ for mod = 1:length(mod_schemes)
         
         while errorStats(3) <= maxNumBits
             data = randi([0,1],frameSize);                          % Generate binary data
-            qpskTx = pskmod(data, M, pi/M, InputType="bit");      % Apply QPSK modulation
+            if ~strcmp(mod_schemes(mod), 'qam')
+                tx_sig = pskmod(data, M, pi/M, InputType="bit");      % Apply M-PSK modulation
+            else
+                tx_sig = qammod(data, M, InputType="bit");
+            end 
+            
            
-            txSig = ofdmMod(qpskTx);                      % Apply OFDM modulation
+            txSig = ofdmMod(tx_sig);                      % Apply OFDM modulation
             powerDB = 10*log10(var(txSig));           % Calculate Tx signal power
             noiseVar = 10.^(0.1*(powerDB-snr));           % Calculate the noise variance
     
@@ -115,4 +120,4 @@ lg = legend('Simulation', 'Theory');
 lg.Orientation = 'horizontal';
 lg.Layout.Tile = 'south';
 
-saveas(gcf, 'AWGN Baseline.png')
+saveas(gcf, 'AWGN Baseline.m')
