@@ -1,5 +1,5 @@
 %OFDM Baseline using all Matlab System Objects [https://www.mathworks.com/help/comm/gs/qpsk-and-ofdm-with-matlab-system-objects-1.html]
-clear all; clc; close all;  
+clc; close all;  
 
 %Step 1.a: Parameter Settings and Error Rate Object 
 mod_schemes = {'BPSK', 'QPSK', '8PSK', 'QAM'};  %modulation schemes
@@ -8,7 +8,7 @@ numSC = 128;           % Number of OFDM subcarriers
 cpLen = 32;            % OFDM cyclic prefix length
 maxNumBits = 1e6;      % Maximum number of bits transmitted
 errorRate = comm.ErrorRate('ResetInputPort',true);
-EbNo = (0:10)'; %EbNo values 
+EbNo = (-5:10)'; %EbNo values 
 berVecAllModSchemes = zeros(length(mod_schemes), length(EbNo));
 
 %Step 1.b: Loop Through All Modulation Schemes
@@ -127,3 +127,7 @@ lg.Orientation = 'horizontal';
 lg.Layout.Tile = 'south';
 
 saveas(gcf, 'AWGN Baseline.m')
+
+%Step 6: Save Results to Excel File
+%columns = snr, rows = mod scheme (BPSK, QPSK, 8PSK, QAM)
+writematrix(berVecAllModSchemes, 'AWGN Baseline.xls')
