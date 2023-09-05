@@ -72,7 +72,7 @@ for mod = 1:length(mod_schemes)
 end 
 
 
-%Step 5: Plot Error Curve
+%% Step 5: Plot Error Curve
 berTheory_bpsk = berawgn(EbNo,'psk',2,'nondiff');
 berTheory_qpsk = berawgn(EbNo,'psk',4,'nondiff');
 berTheory_8psk = berawgn(EbNo,'psk',8,'nondiff');
@@ -86,7 +86,7 @@ nexttile
 semilogy(EbNo,berVecAllModSchemes(1,:),'-o')
 hold on
 semilogy(EbNo,berTheory_bpsk)
-title('BER AWGN Channel BPSK')
+title('BPSK')
 xlabel('Eb/No (dB)')
 ylabel('Bit Error Rate')
 grid on
@@ -96,7 +96,7 @@ nexttile
 semilogy(EbNo,berVecAllModSchemes(2,:),'-o')
 hold on
 semilogy(EbNo,berTheory_qpsk)
-title('BER AWGN Channel QPSK')
+title('QPSK')
 xlabel('Eb/No (dB)')
 ylabel('Bit Error Rate')
 grid on
@@ -106,17 +106,17 @@ nexttile
 semilogy(EbNo,berVecAllModSchemes(3,:),'-o')
 hold on
 semilogy(EbNo,berTheory_8psk)
-title('BER AWGN Channel 8PSK')
+title('8PSK')
 xlabel('Eb/No (dB)')
 ylabel('Bit Error Rate')
 grid on
 hold off
 
 nexttile
-semilogy(EbNo,berVecAllModSchemes(2,:),'-o')
+semilogy(EbNo,berVecAllModSchemes(4,:),'-o')
 hold on
 semilogy(EbNo,berTheory_qam)
-title('BER AWGN Channel QAM')
+title('QAM')
 xlabel('Eb/No (dB)')
 ylabel('Bit Error Rate') 
 grid on
@@ -126,8 +126,10 @@ lg = legend('Simulation', 'Theory');
 lg.Orientation = 'horizontal';
 lg.Layout.Tile = 'south';
 
+sgtitle('BER vs. AWGN Channel')
+
 saveas(gcf, 'AWGN Baseline.m')
 
-%Step 6: Save Results to Excel File
+%% Step 6: Save Results to Excel File
 %columns = snr, rows = mod scheme (BPSK, QPSK, 8PSK, QAM)
 writematrix(berVecAllModSchemes, 'AWGN Baseline.xls')
